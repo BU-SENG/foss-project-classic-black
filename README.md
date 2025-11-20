@@ -3,6 +3,8 @@
 
 A lightweight expense-tracking React app (classic black theme) built with Vite. This repository is open source and licensed under the MIT License — you are welcome to modify, fork, and contribute.
 
+Backend API repo : github.com/I-Divine/foss-expense-tracker-api.git
+
 **Features**
 - Authentication (signup / login / forgot password)
 - Dashboard with expense summaries
