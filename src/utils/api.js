@@ -1,5 +1,5 @@
 // src/utils/api.js
-const API_BASE_URL = "https://foss-expense-tracker-api.vercel.app/"; // Change this to your actual API URL
+const API_BASE_URL = "https://foss-expense-tracker-api.vercel.app"; // Change this to your actual API URL
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
