@@ -1,90 +1,205 @@
 // src/utils/api.js
+const API_BASE_URL = "http://localhost:3000"; // Change this to your actual API URL
 
-let mockUser = JSON.parse(localStorage.getItem('user')) || null;
-let mockExpenses = JSON.parse(localStorage.getItem('expenses')) || [
-  { id: 1, amount: 12.5, category: 'Food', date: '2025-11-10', notes: 'Sandwich and coffee' },
-  { id: 2, amount: 9.99, category: 'Books', date: '2025-11-05', notes: 'Notebook and pens' },
-];
-
-const CATEGORIES = ['Food', 'Transport', 'Books', 'Entertainment', 'Utilities', 'Other'];
-
-
-const persistExpenses = () => {
-  localStorage.setItem('expenses', JSON.stringify(mockExpenses));
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = sessionStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
 };
 
-const persistUser = () => {
-  if (mockUser) {
-    localStorage.setItem('user', JSON.stringify(mockUser));
-  } else {
-    localStorage.removeItem('user');
+// Helper function to handle API responses
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Request failed" }));
+    throw new Error(error.message || `HTTP error! status: ${response.status}`);
   }
+  return response.json();
 };
-
 
 export const api = {
+  // Auth endpoints
   login: async (email, password) => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    if (email && email.endsWith('@student.edu') && password && password.length >= 6) {
-      mockUser = { id: Date.now(), email };
-      persistUser();
-      return { success: true, user: mockUser };
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await handleResponse(response);
+
+    if (data.access_token) {
+      sessionStorage.setItem("token", data.access_token);
+      if (data.user) {
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+      }
     }
-    throw new Error('Invalid email or password');
+    return data;
   },
 
-  signup: async (email, password) => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    if (email && email.endsWith('@student.edu') && password && password.length >= 6) {
-      mockUser = { id: Date.now(), email };
-      persistUser();
-      return { success: true, user: mockUser };
+  register: async (email, password, name) => {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+        name,
+        spendLimit: 0,
+        monthlyIncome: 0,
+      }),
+    });
+    const data = await handleResponse(response);
+
+    if (data.access_token) {
+      sessionStorage.setItem("token", data.access_token);
+      if (data.user) {
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+      }
     }
-    throw new Error('Invalid email or password');
+    return data;
   },
 
   logout: () => {
-    mockUser = null;
-    persistUser();
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
   },
 
-  getCurrentUser: () => mockUser,
+  // User endpoints
+  getCurrentUser: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/self`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+      });
+      const data = await handleResponse(response);
+      sessionStorage.setItem("user", JSON.stringify(data));
+      return data;
+    } catch (error) {
+      // If request fails (e.g., token expired), clear session and return null
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
+      return null;
+    }
+  },
 
+  findAllUsers: async () => {
+    const response = await fetch(`${API_BASE_URL}/user`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  findUserSelf: async () => {
+    const response = await fetch(`${API_BASE_URL}/user/self`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    const data = await handleResponse(response);
+    sessionStorage.setItem("user", JSON.stringify(data));
+    return data;
+  },
+
+  updateUser: async (id, updates) => {
+    const response = await fetch(`${API_BASE_URL}/user/${id}`, {
+      method: "PATCH",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updates),
+    });
+    const data = await handleResponse(response);
+    sessionStorage.setItem("user", JSON.stringify(data));
+    return data;
+  },
+
+  deleteUser: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/user/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    const data = await handleResponse(response);
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    return data;
+  },
+
+  // Expense endpoints
   getExpenses: async () => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...mockExpenses];
+    const response = await fetch(`${API_BASE_URL}/expense`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
   },
 
   addExpense: async (expenseData) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const newExpense = {
-      id: Date.now(),
-      amount: parseFloat(expenseData.amount),
-      category: expenseData.category,
-      date: expenseData.date,
-      notes: expenseData.notes.trim() || '—'
-    };
-    mockExpenses = [newExpense, ...mockExpenses];
-    persistExpenses();
-    return newExpense;
+    const response = await fetch(`${API_BASE_URL}/expense`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(expenseData),
+    });
+    return handleResponse(response);
+  },
+
+  getTotalExpenses: async () => {
+    const response = await fetch(`${API_BASE_URL}/expense/total`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getExpensesByCategory: async (category) => {
+    const response = await fetch(
+      `${API_BASE_URL}/expense/category/${category}`,
+      {
+        method: "GET",
+        headers: getAuthHeaders(),
+      }
+    );
+    return handleResponse(response);
+  },
+
+  getExpenseById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/expense/${id}`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
   },
 
   updateExpense: async (id, updates) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    mockExpenses = mockExpenses.map(exp =>
-      exp.id === id ? { ...exp, ...updates } : exp
-    );
-    persistExpenses();
-    return mockExpenses.find(exp => exp.id === id);
+    const response = await fetch(`${API_BASE_URL}/expense/${id}`, {
+      method: "PATCH",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updates),
+    });
+    return handleResponse(response);
   },
 
   deleteExpense: async (id) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    mockExpenses = mockExpenses.filter(exp => exp.id !== id);
-    persistExpenses();
-    
+    const response = await fetch(`${API_BASE_URL}/expense/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
   },
 
-  getCategories: () => [...CATEGORIES]
-  
+  // Utility methods
+  getCategories: () => [
+    "FOOD",
+    "TRANSPORT",
+    "ENTERTAINMENT",
+    "HEALTH",
+    "UTILITIES",
+    "EDUCATION",
+    "OTHER",
+  ],
+
+  isAuthenticated: () => !!sessionStorage.getItem("token"),
+
+  getToken: () => sessionStorage.getItem("token"),
 };

@@ -1,30 +1,31 @@
 // src/components/auth/SignupForm.jsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../../utils/api';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../../utils/api";
 
 export default function SignupForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
 
     try {
-      await api.signup(email, password);
-      navigate('/dashboard', { replace: true });
+      await api.register(email, password, name);
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -32,9 +33,19 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+    >
       <div>
-        <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem', fontWeight: '500' }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "0.25rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+          }}
+        >
           Email (use @student.edu)
         </label>
         <input
@@ -42,19 +53,51 @@ export default function SignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={{
-            width: '100%',
-            padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem'
+            width: "100%",
+            padding: "0.5rem 0.75rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.375rem",
+            fontSize: "0.875rem",
           }}
           placeholder="e.g. jsmith@student.edu"
           required
         />
       </div>
-
       <div>
-        <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem', fontWeight: '500' }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "0.25rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+          }}
+        >
+          Username
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "0.5rem 0.75rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.375rem",
+            fontSize: "0.875rem",
+          }}
+          placeholder="e.g. joseph smith"
+          required
+        />
+      </div>
+      <div>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "0.25rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+          }}
+        >
           Password (min 6 chars)
         </label>
         <input
@@ -62,11 +105,11 @@ export default function SignupForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={{
-            width: '100%',
-            padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem'
+            width: "100%",
+            padding: "0.5rem 0.75rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.375rem",
+            fontSize: "0.875rem",
           }}
           placeholder="••••••••"
           minLength="6"
@@ -75,7 +118,14 @@ export default function SignupForm() {
       </div>
 
       <div>
-        <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.875rem', fontWeight: '500' }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "0.25rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+          }}
+        >
           Confirm Password
         </label>
         <input
@@ -83,11 +133,11 @@ export default function SignupForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           style={{
-            width: '100%',
-            padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            fontSize: '0.875rem'
+            width: "100%",
+            padding: "0.5rem 0.75rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.375rem",
+            fontSize: "0.875rem",
           }}
           placeholder="••••••••"
           minLength="6"
@@ -96,13 +146,15 @@ export default function SignupForm() {
       </div>
 
       {error && (
-        <div style={{
-          padding: '0.5rem',
-          backgroundColor: '#fee2e2',
-          color: '#dc2626',
-          borderRadius: '0.375rem',
-          fontSize: '0.875rem'
-        }}>
+        <div
+          style={{
+            padding: "0.5rem",
+            backgroundColor: "#fee2e2",
+            color: "#dc2626",
+            borderRadius: "0.375rem",
+            fontSize: "0.875rem",
+          }}
+        >
           ❌ {error}
         </div>
       )}
@@ -111,31 +163,33 @@ export default function SignupForm() {
         type="submit"
         disabled={isLoading}
         style={{
-          width: '100%',
-          padding: '0.75rem',
-          backgroundColor: isLoading ? '#9ca3af' : '#16a34a',
-          color: 'white',
-          borderRadius: '0.375rem',
-          fontSize: '0.875rem',
-          fontWeight: '500',
-          cursor: isLoading ? 'not-allowed' : 'pointer'
+          width: "100%",
+          padding: "0.75rem",
+          backgroundColor: isLoading ? "#9ca3af" : "#16a34a",
+          color: "white",
+          borderRadius: "0.375rem",
+          fontSize: "0.875rem",
+          fontWeight: "500",
+          cursor: isLoading ? "not-allowed" : "pointer",
         }}
       >
-        {isLoading ? 'Creating account...' : 'Create Account'}
+        {isLoading ? "Creating account..." : "Create Account"}
       </button>
 
-      <div style={{ textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-        Already have an account?{' '}
+      <div
+        style={{ textAlign: "center", fontSize: "0.875rem", color: "#6b7280" }}
+      >
+        Already have an account?{" "}
         <button
           type="button"
-          onClick={() => navigate('/login')}
+          onClick={() => navigate("/login")}
           style={{
-            color: '#2563eb',
-            textDecoration: 'underline',
-            background: 'none',
-            border: 'none',
-            fontWeight: '500',
-            cursor: 'pointer'
+            color: "#2563eb",
+            textDecoration: "underline",
+            background: "none",
+            border: "none",
+            fontWeight: "500",
+            cursor: "pointer",
           }}
         >
           Sign in

@@ -1,20 +1,20 @@
 // src/App.jsx
-import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { api } from './utils/api';
-import SettingsPage from './pages/SettingsPage';
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { api } from "./utils/api";
+import SettingsPage from "./pages/SettingsPage";
 
 // Auth Pages
-import AuthPage from './pages/AuthPage';
-import LoginForm from './components/auth/LoginForm';
-import SignupForm from './components/auth/SignupForm';
-import ForgotPasswordForm from './components/auth/ForgotPasswordForm';
+import AuthPage from "./pages/AuthPage";
+import LoginForm from "./components/auth/LoginForm";
+import SignupForm from "./components/auth/SignupForm";
+import ForgotPasswordForm from "./components/auth/ForgotPasswordForm";
 
 // Protected Pages
-import DashboardPage from './pages/DashboardPage';
-import AddExpensePage from './pages/AddExpensePage';
-import ExpenseListPage from './pages/ExpenseListPage';
-import CategoryPage from './pages/CategoryPage';
+import DashboardPage from "./pages/DashboardPage";
+import AddExpensePage from "./pages/AddExpensePage";
+import ExpenseListPage from "./pages/ExpenseListPage";
+import CategoryPage from "./pages/CategoryPage";
 
 function RequireAuth({ children }) {
   const [isChecking, setIsChecking] = useState(true);
@@ -22,22 +22,29 @@ function RequireAuth({ children }) {
 
   useEffect(() => {
     const user = api.getCurrentUser();
-    setIsAuthenticated(!!user);
+    const token = sessionStorage.getItem("token");
+    console.log(user);
+
+    setIsAuthenticated(token != null);
     setIsChecking(false);
   }, []);
 
   if (isChecking) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{
-          fontSize: '1.25rem',
-          color: '#6b7280'
-        }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "1.25rem",
+            color: "#6b7280",
+          }}
+        >
           Loading...
         </div>
       </div>
@@ -60,19 +67,58 @@ export default function App() {
       <Route path="/forgot" element={<AuthPage />}>
         <Route index element={<ForgotPasswordForm />} />
       </Route>
-
       {/* Protected Routes */}
-      <Route path="/" element={<RequireAuth><DashboardPage /></RequireAuth>} />
-      <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
-      <Route path="/add" element={<RequireAuth><AddExpensePage /></RequireAuth>} />
-      <Route path="/expenses" element={<RequireAuth><ExpenseListPage /></RequireAuth>} />
-      <Route path="/categories" element={<RequireAuth><CategoryPage /></RequireAuth>} />
-
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <DashboardPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <RequireAuth>
+            <DashboardPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/add"
+        element={
+          <RequireAuth>
+            <AddExpensePage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/expenses"
+        element={
+          <RequireAuth>
+            <ExpenseListPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <RequireAuth>
+            <CategoryPage />
+          </RequireAuth>
+        }
+      />
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
       // In your Routes:
-<Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
+      <Route
+        path="/settings"
+        element={
+          <RequireAuth>
+            <SettingsPage />
+          </RequireAuth>
+        }
+      />
     </Routes>
-    
   );
 }
