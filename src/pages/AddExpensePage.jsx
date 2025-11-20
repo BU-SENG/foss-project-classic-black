@@ -13,7 +13,9 @@ export default function AddExpensePage() {
   const navigate = useNavigate();
 
   const categories = api.getCategories();
+  const [expenses, setExpenses] = useState([])
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
