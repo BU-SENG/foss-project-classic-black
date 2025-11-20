@@ -1,16 +1,66 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# foss-project-classic-black
 
-Currently, two official plugins are available:
+A lightweight expense-tracking React app (classic black theme) built with Vite. This repository is open source and licensed under the MIT License — you are welcome to modify, fork, and contribute.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Features**
+- Authentication (signup / login / forgot password)
+- Dashboard with expense summaries
+- Add, list and categorize expenses
+- Settings and user preferences
 
-## React Compiler
+**Requirements**
+- Node.js 16+ (or compatible)
+- npm (or yarn)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Install**
 
-## Expanding the ESLint configuration
+Open a terminal (PowerShell) in the project root and run:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```powershell
+npm install
+```
+
+**Run (development)**
+
+```powershell
+npm run dev
+```
+
+Then open the URL shown by Vite (usually `http://localhost:5173`).
+
+**Build**
+
+```powershell
+npm run build
+```
+
+**Preview production build**
+
+```powershell
+npm run preview
+```
+
+**Project Structure (important files)**
+- `src/` — React sources
+- `src/components/auth/` — auth forms (login, signup, forgot password)
+- `src/pages/` — app pages (Dashboard, AddExpense, etc.)
+- `public/` — static assets
+- `vite.config.js`, `package.json`, `eslint.config.js`
+
+**Contributing**
+- Fork the repository and create a branch for your change: `feature/<short-name>`
+- Follow existing code style. This project uses ESLint (`eslint.config.js`) — run the linter if available.
+- Add tests or update existing ones when applicable.
+- Open a pull request with a clear description of your change.
+
+By contributing you agree to the project's license terms (MIT).
+
+**License**
+This project is licensed under the MIT License — see `LICENSE`.
+
+**Acknowledgements & Contact**
+- Repository owner/maintainer: BU-SENG
+- If you want help getting started or want me to run tests/commit these files, tell me and I can proceed.
+
+```
