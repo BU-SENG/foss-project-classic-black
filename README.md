@@ -1,17 +1,24 @@
-
 # foss-project-classic-black
 
 A lightweight expense-tracking React app (classic black theme) built with Vite. This repository is open source and licensed under the MIT License — you are welcome to modify, fork, and contribute.
 
-Backend API repo : github.com/I-Divine/foss-expense-tracker-api.git
+## 🚀 Backend API
+
+- **GitHub Repository:**  
+  👉 https://github.com/I-Divine/foss-expense-tracker-api
+
+- **Live Deployment (Vercel):**  
+  🌍 https://foss-expense-tracker-api.vercel.app
 
 **Features**
+
 - Authentication (signup / login / forgot password)
 - Dashboard with expense summaries
 - Add, list and categorize expenses
 - Settings and user preferences
 
 **Requirements**
+
 - Node.js 16+ (or compatible)
 - npm (or yarn)
 
@@ -44,6 +51,7 @@ npm run preview
 ```
 
 **Project Structure (important files)**
+
 - `src/` — React sources
 - `src/components/auth/` — auth forms (login, signup, forgot password)
 - `src/pages/` — app pages (Dashboard, AddExpense, etc.)
@@ -51,6 +59,7 @@ npm run preview
 - `vite.config.js`, `package.json`, `eslint.config.js`
 
 **Contributing**
+
 - Fork the repository and create a branch for your change: `feature/<short-name>`
 - Follow existing code style. This project uses ESLint (`eslint.config.js`) — run the linter if available.
 - Add tests or update existing ones when applicable.
@@ -62,7 +71,10 @@ By contributing you agree to the project's license terms (MIT).
 This project is licensed under the MIT License — see `LICENSE`.
 
 **Acknowledgements & Contact**
+
 - Repository owner/maintainer: BU-SENG
 - If you want help getting started or want me to run tests/commit these files, tell me and I can proceed.
+
+```
 
 ```
